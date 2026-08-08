@@ -1,0 +1,38 @@
+name: Update EPG
+on:
+  schedule:
+    - cron: "0 01,07,13,19 * * *"
+  pull_request:
+      branches:
+        - main
+
+  workflow_dispatch:
+
+jobs:
+  Update-EPG:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: checkout
+        uses: actions/checkout@v4
+        
+      - name: checkout iptv-org/epg repo
+        uses: actions/checkout@v4
+        with:
+         repository: iptv-org/epg
+         path: iptv-org-epg
+
+      - name: update epg
+        run: sh epg/scripts/epg-id.sh
+
+      - name: setup git config
+        run: |
+          git config user.name "actions-user"
+          git config user.email "actions@github.com"
+
+      - name: commit
+        run: |
+          git pull
+          cd epg && git add .
+          git commit -m "Update EPG"
+          git push origin main
