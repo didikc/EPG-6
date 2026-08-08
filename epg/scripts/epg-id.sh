@@ -1,19 +1,19 @@
 #!/bin/bash
+set -e
 
-cd /home/runner/work/EPG-2/EPG-2/iptv-org-epg && npm install
+# Go into iptv-org-epg repo and install dependencies
+cd /home/runner/work/EPG-2/EPG-2/iptv-org-epg
+npm install
 
-# Pix EPG
-
+# Generate Pix EPG
 npm run grab --- --channels=../epg/scripts/pix.xml --output=../epg/pix.xml --days=3
 
 # Compress EPG xml files
-cd ../epg/
+cd ../epg
+gzip -k -f -9 pix.xml
 
-gzip -k -f -9 ../epg/pix.xml
-
-# Remove EPG xml files
-
-# rm ../epg/id*.xml.gz
-# rm ../epg/pix.xml
+# Optional cleanup (currently disabled)
+# rm id*.xml.gz
+# rm pix.xml
 
 exit 0
